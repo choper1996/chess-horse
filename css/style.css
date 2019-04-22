@@ -1,0 +1,31 @@
+body {
+    display: flex;
+    margin: 0;
+    height: 100vh;
+}
+
+.field {
+    display: flex;
+    margin: auto;
+    width: 640px;
+    height: 640px;
+    flex-wrap: wrap;
+    border: 1px solid #000;
+}
+
+.excel {
+    display: flex;
+    width: 78px;
+    height: 78px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #000;
+    font-size: 50px;
+}
+
+.current {
+    color: transparent;
+    background-image: url(https://cdn0.iconfinder.com/data/icons/startup-vol-1-1/512/chess_horse_knight_piece-512.png);
+    -webkit-background-size: cover;
+    background-size: cover;
+}

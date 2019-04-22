@@ -36,6 +36,7 @@ for (let i = 0; i < excel.length; i++) {
 let a = Math.round(Math.random()*63);
 
 excel[a].classList.add('current');
+excel[a].classList.add('set');
 
 let step = 1;
 
@@ -60,35 +61,66 @@ function nextStep () {
         return (item !== null && item.className !== 'excel set');
     });
 
-    let NextStepsNumber = [];
+    function whatToDoNext() {
+        return (
+            vars.map(item => {
+                let nextX = +item.getAttribute('posX'),
+                    nextY = +item.getAttribute('posY');
 
-    console.log(vars);
+                let nextVars = [
+                    document.querySelector(`[posX="${nextX + 1}"][posY="${nextY + 2}"]`),
+                    document.querySelector(`[posX="${nextX + 1}"][posY="${nextY - 2}"]`),
+                    document.querySelector(`[posX="${nextX - 1}"][posY="${nextY + 2}"]`),
+                    document.querySelector(`[posX="${nextX - 1}"][posY="${nextY - 2}"]`),
+                    document.querySelector(`[posX="${nextX + 2}"][posY="${nextY + 1}"]`),
+                    document.querySelector(`[posX="${nextX + 2}"][posY="${nextY - 1}"]`),
+                    document.querySelector(`[posX="${nextX - 2}"][posY="${nextY + 1}"]`),
+                    document.querySelector(`[posX="${nextX - 2}"][posY="${nextY - 1}"]`)
+                ];
 
-    for (let i = 0; i < vars.length; i++) {
-        let nextX = +vars[i].getAttribute('posX'),
-            nextY = +vars[i].getAttribute('posY');
+                let filteredNextVars = nextVars.filter(item => {
+                    return (item !== null && item.className !== 'excel set');
+                });
 
-        let nextVars = [
-            document.querySelector(`[posX="${nextX + 1}"][posY="${nextY + 2}"]`),
-            document.querySelector(`[posX="${nextX + 1}"][posY="${nextY - 2}"]`),
-            document.querySelector(`[posX="${nextX - 1}"][posY="${nextY + 2}"]`),
-            document.querySelector(`[posX="${nextX - 1}"][posY="${nextY - 2}"]`),
-            document.querySelector(`[posX="${nextX + 2}"][posY="${nextY + 1}"]`),
-            document.querySelector(`[posX="${nextX + 2}"][posY="${nextY - 1}"]`),
-            document.querySelector(`[posX="${nextX - 2}"][posY="${nextY + 1}"]`),
-            document.querySelector(`[posX="${nextX - 2}"][posY="${nextY - 1}"]`)
-        ];
-
-        nextVars = nextVars.filter(item => {
-            return (item !== null && item.className !== 'excel set');
-        });
-
-        NextStepsNumber.push(+nextVars.length);
+                return filteredNextVars.length;
+            })
+        )
     }
 
-    console.log(NextStepsNumber);
+    let nextStepsNumbers = whatToDoNext();
 
+    function chooseIndex() {
+       let maxSteps = 8,
+           stepIndex = null;
 
+       for (let i = nextStepsNumbers.length - 1; i > -1; i--) {
+           if (nextStepsNumbers[i] < maxSteps) {
+               maxSteps = nextStepsNumbers[i];
+               stepIndex = i;
+           }
+       }
+
+       return stepIndex;
+    }
+
+    let chosenStepIndex = chooseIndex();
+
+    step++;
+
+    document.querySelector('.current').classList.remove('current');
+    
+    vars[chosenStepIndex].classList.add('current');
+    vars[chosenStepIndex].classList.add('set');
+    vars[chosenStepIndex].innerHTML = step;
+
+    currentX = vars[chosenStepIndex].getAttribute('posX');
+    currentY = vars[chosenStepIndex].getAttribute('posY');
+
+    console.info(vars, nextStepsNumbers, chosenStepIndex);
+
+    let interval = setInterval(()=> {
+        nextStep();
+    },200);
 }
 
 nextStep();

@@ -47,39 +47,39 @@ let currentX = +excel[a].getAttribute('posX'),
 
 function nextStep () {
     let vars = [
-        document.querySelector(`[posX="${currentX + 1}"][posY="${currentY + 2}"]`),
-        document.querySelector(`[posX="${currentX + 1}"][posY="${currentY - 2}"]`),
-        document.querySelector(`[posX="${currentX - 1}"][posY="${currentY + 2}"]`),
-        document.querySelector(`[posX="${currentX - 1}"][posY="${currentY - 2}"]`),
-        document.querySelector(`[posX="${currentX + 2}"][posY="${currentY + 1}"]`),
-        document.querySelector(`[posX="${currentX + 2}"][posY="${currentY - 1}"]`),
-        document.querySelector(`[posX="${currentX - 2}"][posY="${currentY + 1}"]`),
-        document.querySelector(`[posX="${currentX - 2}"][posY="${currentY - 1}"]`)
+        document.querySelector(`[posX="${+currentX + 1}"][posY="${+currentY + 2}"]`),
+        document.querySelector(`[posX="${+currentX + 1}"][posY="${+currentY - 2}"]`),
+        document.querySelector(`[posX="${+currentX - 1}"][posY="${+currentY + 2}"]`),
+        document.querySelector(`[posX="${+currentX - 1}"][posY="${+currentY - 2}"]`),
+        document.querySelector(`[posX="${+currentX + 2}"][posY="${+currentY + 1}"]`),
+        document.querySelector(`[posX="${+currentX + 2}"][posY="${+currentY - 1}"]`),
+        document.querySelector(`[posX="${+currentX - 2}"][posY="${+currentY + 1}"]`),
+        document.querySelector(`[posX="${+currentX - 2}"][posY="${+currentY - 1}"]`)
     ];
 
     vars = vars.filter(item => {
-        return (item !== null && item.className !== 'excel set');
+        return (item !== null && !item.classList.contains('set'));
     });
 
     function whatToDoNext() {
         return (
             vars.map(item => {
-                let nextX = +item.getAttribute('posX'),
-                    nextY = +item.getAttribute('posY');
+                let nextX = item.getAttribute('posX'),
+                    nextY = item.getAttribute('posY');
 
                 let nextVars = [
-                    document.querySelector(`[posX="${nextX + 1}"][posY="${nextY + 2}"]`),
-                    document.querySelector(`[posX="${nextX + 1}"][posY="${nextY - 2}"]`),
-                    document.querySelector(`[posX="${nextX - 1}"][posY="${nextY + 2}"]`),
-                    document.querySelector(`[posX="${nextX - 1}"][posY="${nextY - 2}"]`),
-                    document.querySelector(`[posX="${nextX + 2}"][posY="${nextY + 1}"]`),
-                    document.querySelector(`[posX="${nextX + 2}"][posY="${nextY - 1}"]`),
-                    document.querySelector(`[posX="${nextX - 2}"][posY="${nextY + 1}"]`),
-                    document.querySelector(`[posX="${nextX - 2}"][posY="${nextY - 1}"]`)
+                    document.querySelector(`[posX="${+nextX + 1}"][posY="${+nextY + 2}"]`),
+                    document.querySelector(`[posX="${+nextX + 1}"][posY="${+nextY - 2}"]`),
+                    document.querySelector(`[posX="${+nextX - 1}"][posY="${+nextY + 2}"]`),
+                    document.querySelector(`[posX="${+nextX - 1}"][posY="${+nextY - 2}"]`),
+                    document.querySelector(`[posX="${+nextX + 2}"][posY="${+nextY + 1}"]`),
+                    document.querySelector(`[posX="${+nextX + 2}"][posY="${+nextY - 1}"]`),
+                    document.querySelector(`[posX="${+nextX - 2}"][posY="${+nextY + 1}"]`),
+                    document.querySelector(`[posX="${+nextX - 2}"][posY="${+nextY - 1}"]`)
                 ];
 
                 let filteredNextVars = nextVars.filter(item => {
-                    return (item !== null && item.className !== 'excel set');
+                    return (item !== null && !item.classList.contains('set'));
                 });
 
                 return filteredNextVars.length;
@@ -87,40 +87,35 @@ function nextStep () {
         )
     }
 
-    let nextStepsNumbers = whatToDoNext();
+    let nextStepsNumbers = whatToDoNext(),
+        maxSteps = 8,
+        stepIndex;
 
-    function chooseIndex() {
-       let maxSteps = 8,
-           stepIndex = null;
-
-       for (let i = nextStepsNumbers.length - 1; i > -1; i--) {
-           if (nextStepsNumbers[i] < maxSteps) {
-               maxSteps = nextStepsNumbers[i];
-               stepIndex = i;
-           }
-       }
-
-       return stepIndex;
+    for (let i = nextStepsNumbers.length - 1; i > -1; i--) {
+        if (nextStepsNumbers[i] < maxSteps) {
+            maxSteps = nextStepsNumbers[i];
+            stepIndex = i;
+        }
     }
-
-    let chosenStepIndex = chooseIndex();
 
     step++;
 
     document.querySelector('.current').classList.remove('current');
-    
-    vars[chosenStepIndex].classList.add('current');
-    vars[chosenStepIndex].classList.add('set');
-    vars[chosenStepIndex].innerHTML = step;
 
-    currentX = vars[chosenStepIndex].getAttribute('posX');
-    currentY = vars[chosenStepIndex].getAttribute('posY');
+    vars[stepIndex].classList.add('current');
+    vars[stepIndex].classList.add('set');
+    vars[stepIndex].innerHTML = step;
 
-    console.info(vars, nextStepsNumbers, chosenStepIndex);
+    currentX = vars[stepIndex].getAttribute('posX');
+    currentY = vars[stepIndex].getAttribute('posY');
 
-    let interval = setInterval(()=> {
-        nextStep();
-    },200);
+    if (step === 64) {
+        clearInterval(interval);
+    }
 }
 
-nextStep();
+let interval = setInterval (()=> {
+    nextStep();
+}, 1000);
+
+

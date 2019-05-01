@@ -1,8 +1,13 @@
-const field = document.createElement('div');
+const field = document.createElement('div'),
+    startButton = document.createElement('button');
 
 document.body.appendChild(field);
+document.body.appendChild(startButton);
 
-field.classList.add('field');
+field.setAttribute('id','field');
+startButton.setAttribute('id','start-button');
+startButton.innerText = 'start';
+
 
 for (let i = 1; i < 65; i++) {
     let excel = document.createElement('div');
@@ -12,12 +17,36 @@ for (let i = 1; i < 65; i++) {
 }
 
 let excel = document.querySelectorAll('.excel');
+
 let x = 1,
     y = 8;
+
+let currentX,
+    currentY;
+
+let step = 1;
 
 for (let i = 0; i < excel.length; i++) {
     excel[i].setAttribute('posX', x);
     excel[i].setAttribute('posY', y);
+
+    excel[i].addEventListener('click', (e) => {
+
+        if (currentX !== undefined ) {
+            let clearExcel = document.querySelector(`[posX="${currentX}"][posY="${currentY}"]`);
+
+            clearExcel.classList.remove('current','set');
+            clearExcel.innerText = '';
+        }
+
+        let chosenExcel = e.target;
+
+        chosenExcel.classList.add('current','set');
+        chosenExcel.innerText = step;
+
+        currentX = +chosenExcel.getAttribute('posX');
+        currentY = +chosenExcel.getAttribute('posY');
+    });
 
     x++;
 
@@ -32,18 +61,6 @@ for (let i = 0; i < excel.length; i++) {
         y--;
     }
 }
-
-let a = Math.round(Math.random()*63);
-
-excel[a].classList.add('current');
-excel[a].classList.add('set');
-
-let step = 1;
-
-excel[a].innerHTML = step;
-
-let currentX = +excel[a].getAttribute('posX'),
-    currentY = +excel[a].getAttribute('posY');
 
 function nextStep () {
     let vars = [
@@ -114,8 +131,27 @@ function nextStep () {
     }
 }
 
-let interval = setInterval (()=> {
-    nextStep();
-}, 1000);
+let interval;
+
+startButton.addEventListener('click', (e)=> {
+    if (currentX === undefined) {
+        alert('Please choose excel')
+
+    } else if (startButton.innerText === 'start') {
+        interval = setInterval(()=> {
+            nextStep();
+        }, 200);
+
+        startButton.innerText = 'stop'
+
+    } else if (startButton.innerText === 'stop') {
+        for (let i = 0; i < excel.length; i++) {
+            clearInterval(interval);
+            startButton.innerText = 'start';
+        }
+    }
+
+});
+
 
 

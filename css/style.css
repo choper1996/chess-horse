@@ -1,12 +1,14 @@
 body {
     display: flex;
-    margin: 0;
+    align-items: center;
+    justify-content: center;
     height: 100vh;
+    margin: 0;
+    flex-direction: column;
 }
 
-.field {
+#field {
     display: flex;
-    margin: auto;
     width: 640px;
     height: 640px;
     flex-wrap: wrap;
@@ -28,4 +30,11 @@ body {
     background-image: url(https://cdn0.iconfinder.com/data/icons/startup-vol-1-1/512/chess_horse_knight_piece-512.png);
     -webkit-background-size: cover;
     background-size: cover;
+}
+
+#start-button {
+    margin-top: 40px;
+    min-width: 300px;
+    padding: 10px 20px;
+    text-align: center;
 }
